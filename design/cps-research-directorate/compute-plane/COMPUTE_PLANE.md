@@ -5,7 +5,7 @@ Status: draft
 
 Overlay: `wireguard` (`10.200.0.0/16`) | Identity: `per-route-keys` | Gateway: `gateway` (`seat-token`, enabled)
 
-Nodes: **8** · Endpoints: **9** · Routes: **13** · Gaps: **11** (critical 3, high 2, medium 6)
+Nodes: **8** · Endpoints: **8** · Routes: **63** · Gaps: **6** (critical 1, high 1, medium 4)
 
 Nothing calls a node directly. Every call enters at the gateway entry point, which selects a capability-class route. Credentials are read from the environment at call time and are never logged.
 
@@ -13,142 +13,222 @@ Nothing calls a node directly. Every call enters at the gateway entry point, whi
 
 ### Nodes
 
-| Node | Kind | CPU cores | RAM GB | GPUs | Reachability | Status | Data tiers allowed | Segment |
-|---|---|---|---|---|---|---|---|---|
-| `apple-node-1` | apple-silicon | 12 | 128 | — | private-overlay | online | public, internal, program-restricted | wireguard |
-| `apple-node-2` | apple-silicon | 12 | 128 | — | private-overlay | online | public, internal, program-restricted | wireguard |
-| `cpu-node-1` | cpu-server | 16 | 64 | — | lan | online | public, internal, program-restricted | wireguard |
-| `gpu-node-1` | gpu-server | 64 | 256 | 2× accelerator-48gb (48 GB) | lan | online | public, internal, program-restricted | wireguard |
-| `gpu-node-2` | gpu-server | 64 | 256 | 2× accelerator-48gb (48 GB) | lan | online | internal | wireguard |
-| `gpu-node-3` | gpu-server | 64 | 256 | 2× accelerator-48gb (48 GB) | lan | online | public, internal, program-restricted | wireguard |
-| `gpu-node-4` | gpu-server | 64 | 256 | 2× accelerator-48gb (48 GB) | lan | online | public, internal, program-restricted | wireguard |
-| `lab-node-1` | lab-bench | 4 | 16 | — | unreachable | offline | public, internal, program-restricted | unreachable |
+| Node | Kind | CPU cores | RAM GB | GPUs | Reachability | Status | Pool | Data tiers allowed | Segment |
+|---|---|---|---|---|---|---|---|---|---|
+| `apple-ws-1` | apple-silicon | 24 | 192 | — | private-overlay | online | apple-primary | public, internal, program-restricted, export-controlled | wireguard |
+| `apple-ws-2` | apple-silicon | 24 | 192 | — | private-overlay | online | apple-primary | public, internal, program-restricted, export-controlled | wireguard |
+| `apple-ws-3` | apple-silicon | 24 | 192 | — | private-overlay | online | apple-primary | public, internal, program-restricted, export-controlled | wireguard |
+| `cpu-exec-1` | cpu-server | 16 | 64 | — | lan | online | — | public, internal, program-restricted, export-controlled | wireguard |
+| `gpu-burst-1` | gpu-server | 64 | 256 | 2× accelerator-48gb (48 GB) | vpn | standby | remote-gpu-burst | public, internal | wireguard |
+| `gpu-burst-2` | gpu-server | 64 | 256 | 2× accelerator-48gb (48 GB) | vpn | standby | remote-gpu-burst | public, internal | wireguard |
+| `gpu-burst-3` | gpu-server | 64 | 256 | 2× accelerator-48gb (48 GB) | vpn | standby | remote-gpu-burst | public, internal | wireguard |
+| `gpu-burst-4` | gpu-server | 64 | 256 | 2× accelerator-48gb (48 GB) | vpn | standby | remote-gpu-burst | public, internal | wireguard |
 
 
 ### Serving endpoints
 
 | Provider | Engine | Node | Endpoint | Bind scope | Authenticated | Models |
 |---|---|---|---|---|---|---|
-| `cloud-gap` | vllm | `gpu-node-2` | http://10.0.1.12:9000 | private-network | yes | `weights-cloud` |
-| `llamacpp-cpu-1` | llama.cpp | `cpu-node-1` | http://127.0.0.1:8210 | loopback | yes | `weights-3b` |
-| `llamacpp-gpu-2` | llama.cpp | `gpu-node-2` | http://10.0.1.12:8080 | private-network | yes | `weights-13b` |
-| `mlx-apple-1` | mlx | `apple-node-1` | http://127.0.0.1:8080 | loopback | yes | `weights-unified-35b` |
-| `mlx-apple-2` | mlx | `apple-node-2` | http://10.0.2.21:8080 | private-network | yes | `weights-unknown` |
-| `public-gap` | openai-compatible | `cpu-node-1` | http://0.0.0.0:8000 | public | no | `weights-public` |
-| `vllm-gpu-1` | vllm | `gpu-node-1` | http://10.0.1.11:8000 | private-network | yes | `weights-70b`, `weights-7b` |
-| `vllm-gpu-3` | vllm | `gpu-node-3` | http://10.0.1.13:8000 | private-network | yes | `weights-60b`, `weights-12b` |
-| `vllm-gpu-4` | vllm | `gpu-node-4` | http://10.0.1.14:8000 | private-network | yes | `weights-22b` |
+| `llamacpp-cpu-1` | llama.cpp | `cpu-exec-1` | http://10.0.0.5:8210 | private-network | yes | `weights-3b` |
+| `mlx-apple-1` | mlx | `apple-ws-1` | http://10.200.0.11:8080 | private-network | yes | `weights-unified-70b` |
+| `mlx-apple-2` | mlx | `apple-ws-2` | http://10.200.0.12:8080 | private-network | yes | `weights-unified-70b` |
+| `mlx-apple-3` | mlx | `apple-ws-3` | http://10.200.0.13:8080 | private-network | yes | `weights-unified-70b` |
+| `vllm-burst-1` | vllm | `gpu-burst-1` | http://10.50.0.11:8000 | private-network | yes | `weights-70b` |
+| `vllm-burst-2` | vllm | `gpu-burst-2` | http://10.50.0.12:8000 | private-network | yes | `weights-70b` |
+| `vllm-burst-3` | vllm | `gpu-burst-3` | http://10.50.0.13:8000 | private-network | yes | `weights-70b` |
+| `vllm-burst-4` | vllm | `gpu-burst-4` | http://10.50.0.14:8000 | private-network | yes | `weights-70b` |
 
 
 Bind scope is derived from the endpoint host: `loopback` (127.0.0.1 / localhost / ::1), `private-network` (RFC1918 / `.internal`), or `public`. Authenticated means `secretRef` is present.
 
-## 2. Memory fit
+## 2. Pools
+
+| Pool | Role | Nodes | Slots | Load | Shortfall | Data tiers | Burst location | Max nodes | Warm-up s | Cost / node-hour |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `apple-primary` | primary | `apple-ws-1`, `apple-ws-2`, `apple-ws-3` | 6 | 12 | 6 | public, internal, program-restricted, export-controlled | — | — | — | — |
+| `lead-hardware-dedicated` | primary | — | 0 | 0 | 0 | public, internal, program-restricted | — | — | — | — |
+| `lead-security-dedicated` | primary | — | 0 | 0 | 0 | public, internal, program-restricted | — | — | — | — |
+| `remote-gpu-burst` | burst | `gpu-burst-1`, `gpu-burst-2`, `gpu-burst-3`, `gpu-burst-4` | 8 | 0 | 0 | public, internal | remote | 4 | 180 | 3.5 USD |
+| `shared-gpu` | primary | — | 0 | 0 | 0 | public, internal, program-restricted, export-controlled | — | — | — | — |
+
+
+Primary pools are always-on. Burst pools come up only when activation fires. Restricted work never goes to a remote or cloud burst pool.
+
+## 3. Demand and capacity
+
+People (principals): **6** · Concurrent journeys / principal: **1** · Peak factor: **2** · In flight / journey: **1**. Total peak concurrent requests = people × concurrentJourneysPerPrincipal × peakFactor × requestsInFlightPerJourney = **12**. requestsPerJourney[class] is a relative weight; class demand = total × weight / sum(weights) over classes that have a route (absent weight = 1), shown to 2 decimals. Capacity is checked per primary pool in aggregate (a class on several primary pools splits by their slots).
+
+| Class | People | Peak concurrent | Primary slots | Shortfall | Burst nodes needed | Warm-up s | Burst cost / hour | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| `architecture-and-final-review` | 6 | 1.33 | 6 | 0.67 | 0 | — | — | **cannot-cover** |
+| `code-build` | 6 | 2.67 | 6 | 1.33 | 3 | 180 | 10.5 USD | **needs-burst** |
+| `code-review` | 6 | 1.33 | 6 | 0.67 | 3 | 180 | 10.5 USD | **needs-burst** |
+| `correspondence-drafting` | 6 | 1.33 | 6 | 0.67 | 3 | 180 | 10.5 USD | **needs-burst** |
+| `embedding` | 6 | 0.67 | 6 | 0.33 | 3 | 180 | 10.5 USD | **needs-burst** |
+| `health-check` | 6 | 0.67 | 6 | 0.33 | 3 | 180 | 10.5 USD | **needs-burst** |
+| `intake-classification` | 6 | 1.33 | 6 | 0.67 | 3 | 180 | 10.5 USD | **needs-burst** |
+| `se-review` | 6 | 1.33 | 6 | 0.67 | 3 | 180 | 10.5 USD | **needs-burst** |
+| `se-synthesis` | 6 | 1.33 | 6 | 0.67 | 3 | 180 | 10.5 USD | **needs-burst** |
+
+
+Verdicts: `covered-by-primary` | `needs-burst` | `cannot-cover`. `covered-by-primary` means the serving pool is not short. `needs-burst` means the pool is short, the class may burst, and burst nodes fit in the cap. `cannot-cover` is the restricted (or otherwise non-burstable) share of a shortfall, or shortfall beyond the burst cap. The last two never count as covered.
+
+## 4. Sizing
+
+Primary capacity already covers routineLoad (load / peakFactor); burst is only for the peak factor.
+
+Arithmetic: `routineLoad = load / peakFactor = 12 / 2 = 6; slots = 6; typical primary node = 2 slots (apple-primary); additional nodes = ceil(max(0, 6 - 6) / 2) = 0`
+
+## 5. Memory fit
 
 Need = declared `models[].memoryGb` + KV cache (`contextTokens × parallelSlots × kvBytesPerToken / 1024³`). GPU nodes pack onto GPUs with headroom reserved; Apple-silicon uses unified memory; other nodes use RAM. `unknown` (no declared size) is a gap and is never `fits`. `cpu-fallback` is a GPU node whose model cannot fit its GPUs.
 
 | Node | Provider | Model | Weights GB | KV GB | Need GB | Placement | Verdict |
 |---|---|---|---|---|---|---|---|
-| `apple-node-1` | `mlx-apple-1` | `weights-unified-35b` | 35.0 | 16.0 | 51.0 | unified | **fits** |
-| `apple-node-2` | `mlx-apple-2` | `weights-unknown` | — | — | — | — | **unknown** |
-| `cpu-node-1` | `llamacpp-cpu-1` | `weights-3b` | 4.0 | 1.0 | 5.0 | ram | **fits** |
-| `cpu-node-1` | `public-gap` | `weights-public` | 4.0 | 1.0 | 5.0 | ram | **fits** |
-| `gpu-node-1` | `vllm-gpu-1` | `weights-70b` | 40.0 | 10.0 | 50.0 | gpu-0+gpu-1 | **fits** |
-| `gpu-node-1` | `vllm-gpu-1` | `weights-7b` | 8.0 | 2.0 | 10.0 | gpu-0 | **fits** |
-| `gpu-node-2` | `cloud-gap` | `weights-cloud` | 8.0 | 1.0 | 9.0 | gpu-0 | **fits** |
-| `gpu-node-2` | `llamacpp-gpu-2` | `weights-13b` | 10.0 | 1.0 | 11.0 | gpu-0 | **fits** |
-| `gpu-node-3` | `vllm-gpu-3` | `weights-12b` | 12.0 | 2.0 | 14.0 | gpu-0 | **fits** |
-| `gpu-node-3` | `vllm-gpu-3` | `weights-60b` | 60.0 | 2.0 | 62.0 | cpu | **cpu-fallback** |
-| `gpu-node-4` | `vllm-gpu-4` | `weights-22b` | 22.0 | 2.0 | 24.0 | gpu-0 | **fits** |
+| `apple-ws-1` | `mlx-apple-1` | `weights-unified-70b` | 80.0 | 8.0 | 88.0 | unified | **fits** |
+| `apple-ws-2` | `mlx-apple-2` | `weights-unified-70b` | 80.0 | 8.0 | 88.0 | unified | **fits** |
+| `apple-ws-3` | `mlx-apple-3` | `weights-unified-70b` | 80.0 | 8.0 | 88.0 | unified | **fits** |
+| `cpu-exec-1` | `llamacpp-cpu-1` | `weights-3b` | 4.0 | 1.0 | 5.0 | ram | **fits** |
+| `gpu-burst-1` | `vllm-burst-1` | `weights-70b` | 40.0 | 10.0 | 50.0 | gpu-0+gpu-1 | **fits** |
+| `gpu-burst-2` | `vllm-burst-2` | `weights-70b` | 40.0 | 10.0 | 50.0 | gpu-0+gpu-1 | **fits** |
+| `gpu-burst-3` | `vllm-burst-3` | `weights-70b` | 40.0 | 10.0 | 50.0 | gpu-0+gpu-1 | **fits** |
+| `gpu-burst-4` | `vllm-burst-4` | `weights-70b` | 40.0 | 10.0 | 50.0 | gpu-0+gpu-1 | **fits** |
 
 
-## 3. Gateway route table
+## 6. Gateway route table
 
 ### `architecture-and-final-review`
 
-Deadline: 1800 s · Replicas: **1** · Failover order: `r-final`
+Deadline: 1800 s · Replicas: **3** · Overflow order: `r-architecture-and-final-review-apple-1` → `r-architecture-and-final-review-apple-2` → `r-architecture-and-final-review-apple-3` (primary first; burst only when activation fires)
 
-| Failover | Route | Priority | Provider | Endpoint | Node | Data tiers | Model |
-|---|---|---|---|---|---|---|---|
-| 1 | `r-final` | 1 | `mlx-apple-1` | http://127.0.0.1:8080 | `apple-node-1` | public, internal | weights-unified-35b |
+| Overflow | Route | Priority | Provider | Endpoint | Node | Pool role | Eligible | Data tiers | Model |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | `r-architecture-and-final-review-apple-1` | 1 | `mlx-apple-1` | http://10.200.0.11:8080 | `apple-ws-1` | primary | always | public, internal, program-restricted, export-controlled | weights-unified-70b |
+| 2 | `r-architecture-and-final-review-apple-2` | 2 | `mlx-apple-2` | http://10.200.0.12:8080 | `apple-ws-2` | primary | always | public, internal, program-restricted, export-controlled | weights-unified-70b |
+| 3 | `r-architecture-and-final-review-apple-3` | 3 | `mlx-apple-3` | http://10.200.0.13:8080 | `apple-ws-3` | primary | always | public, internal, program-restricted, export-controlled | weights-unified-70b |
 
 
 ### `code-build`
 
-Deadline: 1800 s · Replicas: **1** · Failover order: `r-code-build`
+Deadline: 1800 s · Replicas: **7** · Overflow order: `r-code-build-apple-1` → `r-code-build-apple-2` → `r-code-build-apple-3` → `r-code-build-burst-1` → `r-code-build-burst-2` → `r-code-build-burst-3` → `r-code-build-burst-4` (primary first; burst only when activation fires)
 
-| Failover | Route | Priority | Provider | Endpoint | Node | Data tiers | Model |
-|---|---|---|---|---|---|---|---|
-| 1 | `r-code-build` | 1 | `vllm-gpu-3` | http://10.0.1.13:8000 | `gpu-node-3` | public, internal | weights-60b |
+| Overflow | Route | Priority | Provider | Endpoint | Node | Pool role | Eligible | Data tiers | Model |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | `r-code-build-apple-1` | 1 | `mlx-apple-1` | http://10.200.0.11:8080 | `apple-ws-1` | primary | always | public, internal | weights-unified-70b |
+| 2 | `r-code-build-apple-2` | 2 | `mlx-apple-2` | http://10.200.0.12:8080 | `apple-ws-2` | primary | always | public, internal | weights-unified-70b |
+| 3 | `r-code-build-apple-3` | 3 | `mlx-apple-3` | http://10.200.0.13:8080 | `apple-ws-3` | primary | always | public, internal | weights-unified-70b |
+| 4 | `r-code-build-burst-1` | 11 | `vllm-burst-1` | http://10.50.0.11:8000 | `gpu-burst-1` | burst | when-activation | public, internal | weights-70b |
+| 5 | `r-code-build-burst-2` | 12 | `vllm-burst-2` | http://10.50.0.12:8000 | `gpu-burst-2` | burst | when-activation | public, internal | weights-70b |
+| 6 | `r-code-build-burst-3` | 13 | `vllm-burst-3` | http://10.50.0.13:8000 | `gpu-burst-3` | burst | when-activation | public, internal | weights-70b |
+| 7 | `r-code-build-burst-4` | 14 | `vllm-burst-4` | http://10.50.0.14:8000 | `gpu-burst-4` | burst | when-activation | public, internal | weights-70b |
 
 
 ### `code-review`
 
-Deadline: 900 s · Replicas: **1** · Failover order: `r-code-review`
+Deadline: 900 s · Replicas: **7** · Overflow order: `r-code-review-apple-1` → `r-code-review-apple-2` → `r-code-review-apple-3` → `r-code-review-burst-1` → `r-code-review-burst-2` → `r-code-review-burst-3` → `r-code-review-burst-4` (primary first; burst only when activation fires)
 
-| Failover | Route | Priority | Provider | Endpoint | Node | Data tiers | Model |
-|---|---|---|---|---|---|---|---|
-| 1 | `r-code-review` | 1 | `mlx-apple-2` | http://10.0.2.21:8080 | `apple-node-2` | public, internal | weights-unknown |
+| Overflow | Route | Priority | Provider | Endpoint | Node | Pool role | Eligible | Data tiers | Model |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | `r-code-review-apple-1` | 1 | `mlx-apple-1` | http://10.200.0.11:8080 | `apple-ws-1` | primary | always | public, internal | weights-unified-70b |
+| 2 | `r-code-review-apple-2` | 2 | `mlx-apple-2` | http://10.200.0.12:8080 | `apple-ws-2` | primary | always | public, internal | weights-unified-70b |
+| 3 | `r-code-review-apple-3` | 3 | `mlx-apple-3` | http://10.200.0.13:8080 | `apple-ws-3` | primary | always | public, internal | weights-unified-70b |
+| 4 | `r-code-review-burst-1` | 11 | `vllm-burst-1` | http://10.50.0.11:8000 | `gpu-burst-1` | burst | when-activation | public, internal | weights-70b |
+| 5 | `r-code-review-burst-2` | 12 | `vllm-burst-2` | http://10.50.0.12:8000 | `gpu-burst-2` | burst | when-activation | public, internal | weights-70b |
+| 6 | `r-code-review-burst-3` | 13 | `vllm-burst-3` | http://10.50.0.13:8000 | `gpu-burst-3` | burst | when-activation | public, internal | weights-70b |
+| 7 | `r-code-review-burst-4` | 14 | `vllm-burst-4` | http://10.50.0.14:8000 | `gpu-burst-4` | burst | when-activation | public, internal | weights-70b |
 
 
 ### `correspondence-drafting`
 
-Deadline: 300 s · Replicas: **2** · Failover order: `r-cloud` → `r-public`
+Deadline: 300 s · Replicas: **7** · Overflow order: `r-correspondence-drafting-apple-1` → `r-correspondence-drafting-apple-2` → `r-correspondence-drafting-apple-3` → `r-correspondence-drafting-burst-1` → `r-correspondence-drafting-burst-2` → `r-correspondence-drafting-burst-3` → `r-correspondence-drafting-burst-4` (primary first; burst only when activation fires)
 
-| Failover | Route | Priority | Provider | Endpoint | Node | Data tiers | Model |
-|---|---|---|---|---|---|---|---|
-| 1 | `r-cloud` | 1 | `cloud-gap` | http://10.0.1.12:9000 | `gpu-node-2` | — | weights-cloud |
-| 2 | `r-public` | 2 | `public-gap` | http://0.0.0.0:8000 | `cpu-node-1` | public, internal | weights-public |
+| Overflow | Route | Priority | Provider | Endpoint | Node | Pool role | Eligible | Data tiers | Model |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | `r-correspondence-drafting-apple-1` | 1 | `mlx-apple-1` | http://10.200.0.11:8080 | `apple-ws-1` | primary | always | public, internal | weights-unified-70b |
+| 2 | `r-correspondence-drafting-apple-2` | 2 | `mlx-apple-2` | http://10.200.0.12:8080 | `apple-ws-2` | primary | always | public, internal | weights-unified-70b |
+| 3 | `r-correspondence-drafting-apple-3` | 3 | `mlx-apple-3` | http://10.200.0.13:8080 | `apple-ws-3` | primary | always | public, internal | weights-unified-70b |
+| 4 | `r-correspondence-drafting-burst-1` | 11 | `vllm-burst-1` | http://10.50.0.11:8000 | `gpu-burst-1` | burst | when-activation | public, internal | weights-70b |
+| 5 | `r-correspondence-drafting-burst-2` | 12 | `vllm-burst-2` | http://10.50.0.12:8000 | `gpu-burst-2` | burst | when-activation | public, internal | weights-70b |
+| 6 | `r-correspondence-drafting-burst-3` | 13 | `vllm-burst-3` | http://10.50.0.13:8000 | `gpu-burst-3` | burst | when-activation | public, internal | weights-70b |
+| 7 | `r-correspondence-drafting-burst-4` | 14 | `vllm-burst-4` | http://10.50.0.14:8000 | `gpu-burst-4` | burst | when-activation | public, internal | weights-70b |
 
 
 ### `embedding`
 
-Deadline: 60 s · Replicas: **1** · Failover order: `r-embed`
+Deadline: 60 s · Replicas: **7** · Overflow order: `r-embedding-apple-1` → `r-embedding-apple-2` → `r-embedding-apple-3` → `r-embedding-burst-1` → `r-embedding-burst-2` → `r-embedding-burst-3` → `r-embedding-burst-4` (primary first; burst only when activation fires)
 
-| Failover | Route | Priority | Provider | Endpoint | Node | Data tiers | Model |
-|---|---|---|---|---|---|---|---|
-| 1 | `r-embed` | 1 | `llamacpp-cpu-1` | http://127.0.0.1:8210 | `cpu-node-1` | public, internal | weights-3b |
+| Overflow | Route | Priority | Provider | Endpoint | Node | Pool role | Eligible | Data tiers | Model |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | `r-embedding-apple-1` | 1 | `mlx-apple-1` | http://10.200.0.11:8080 | `apple-ws-1` | primary | always | public, internal | weights-unified-70b |
+| 2 | `r-embedding-apple-2` | 2 | `mlx-apple-2` | http://10.200.0.12:8080 | `apple-ws-2` | primary | always | public, internal | weights-unified-70b |
+| 3 | `r-embedding-apple-3` | 3 | `mlx-apple-3` | http://10.200.0.13:8080 | `apple-ws-3` | primary | always | public, internal | weights-unified-70b |
+| 4 | `r-embedding-burst-1` | 11 | `vllm-burst-1` | http://10.50.0.11:8000 | `gpu-burst-1` | burst | when-activation | public, internal | weights-70b |
+| 5 | `r-embedding-burst-2` | 12 | `vllm-burst-2` | http://10.50.0.12:8000 | `gpu-burst-2` | burst | when-activation | public, internal | weights-70b |
+| 6 | `r-embedding-burst-3` | 13 | `vllm-burst-3` | http://10.50.0.13:8000 | `gpu-burst-3` | burst | when-activation | public, internal | weights-70b |
+| 7 | `r-embedding-burst-4` | 14 | `vllm-burst-4` | http://10.50.0.14:8000 | `gpu-burst-4` | burst | when-activation | public, internal | weights-70b |
 
 
 ### `health-check`
 
-Deadline: 30 s · Replicas: **2** · Failover order: `r-health-a` → `r-health-b`
+Deadline: 30 s · Replicas: **7** · Overflow order: `r-health-check-apple-1` → `r-health-check-apple-2` → `r-health-check-apple-3` → `r-health-check-burst-1` → `r-health-check-burst-2` → `r-health-check-burst-3` → `r-health-check-burst-4` (primary first; burst only when activation fires)
 
-| Failover | Route | Priority | Provider | Endpoint | Node | Data tiers | Model |
-|---|---|---|---|---|---|---|---|
-| 1 | `r-health-a` | 1 | `vllm-gpu-1` | http://10.0.1.11:8000 | `gpu-node-1` | public, internal | weights-7b |
-| 2 | `r-health-b` | 2 | `mlx-apple-1` | http://127.0.0.1:8080 | `apple-node-1` | public, internal | weights-unified-35b |
+| Overflow | Route | Priority | Provider | Endpoint | Node | Pool role | Eligible | Data tiers | Model |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | `r-health-check-apple-1` | 1 | `mlx-apple-1` | http://10.200.0.11:8080 | `apple-ws-1` | primary | always | public, internal | weights-unified-70b |
+| 2 | `r-health-check-apple-2` | 2 | `mlx-apple-2` | http://10.200.0.12:8080 | `apple-ws-2` | primary | always | public, internal | weights-unified-70b |
+| 3 | `r-health-check-apple-3` | 3 | `mlx-apple-3` | http://10.200.0.13:8080 | `apple-ws-3` | primary | always | public, internal | weights-unified-70b |
+| 4 | `r-health-check-burst-1` | 11 | `vllm-burst-1` | http://10.50.0.11:8000 | `gpu-burst-1` | burst | when-activation | public, internal | weights-70b |
+| 5 | `r-health-check-burst-2` | 12 | `vllm-burst-2` | http://10.50.0.12:8000 | `gpu-burst-2` | burst | when-activation | public, internal | weights-70b |
+| 6 | `r-health-check-burst-3` | 13 | `vllm-burst-3` | http://10.50.0.13:8000 | `gpu-burst-3` | burst | when-activation | public, internal | weights-70b |
+| 7 | `r-health-check-burst-4` | 14 | `vllm-burst-4` | http://10.50.0.14:8000 | `gpu-burst-4` | burst | when-activation | public, internal | weights-70b |
 
 
 ### `intake-classification`
 
-Deadline: 60 s · Replicas: **1** · Failover order: `r-intake`
+Deadline: 60 s · Replicas: **7** · Overflow order: `r-intake-classification-apple-1` → `r-intake-classification-apple-2` → `r-intake-classification-apple-3` → `r-intake-classification-burst-1` → `r-intake-classification-burst-2` → `r-intake-classification-burst-3` → `r-intake-classification-burst-4` (primary first; burst only when activation fires)
 
-| Failover | Route | Priority | Provider | Endpoint | Node | Data tiers | Model |
-|---|---|---|---|---|---|---|---|
-| 1 | `r-intake` | 1 | `vllm-gpu-1` | http://10.0.1.11:8000 | `gpu-node-1` | public, internal | weights-7b |
+| Overflow | Route | Priority | Provider | Endpoint | Node | Pool role | Eligible | Data tiers | Model |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | `r-intake-classification-apple-1` | 1 | `mlx-apple-1` | http://10.200.0.11:8080 | `apple-ws-1` | primary | always | public, internal | weights-unified-70b |
+| 2 | `r-intake-classification-apple-2` | 2 | `mlx-apple-2` | http://10.200.0.12:8080 | `apple-ws-2` | primary | always | public, internal | weights-unified-70b |
+| 3 | `r-intake-classification-apple-3` | 3 | `mlx-apple-3` | http://10.200.0.13:8080 | `apple-ws-3` | primary | always | public, internal | weights-unified-70b |
+| 4 | `r-intake-classification-burst-1` | 11 | `vllm-burst-1` | http://10.50.0.11:8000 | `gpu-burst-1` | burst | when-activation | public, internal | weights-70b |
+| 5 | `r-intake-classification-burst-2` | 12 | `vllm-burst-2` | http://10.50.0.12:8000 | `gpu-burst-2` | burst | when-activation | public, internal | weights-70b |
+| 6 | `r-intake-classification-burst-3` | 13 | `vllm-burst-3` | http://10.50.0.13:8000 | `gpu-burst-3` | burst | when-activation | public, internal | weights-70b |
+| 7 | `r-intake-classification-burst-4` | 14 | `vllm-burst-4` | http://10.50.0.14:8000 | `gpu-burst-4` | burst | when-activation | public, internal | weights-70b |
 
 
 ### `se-review`
 
-Deadline: 900 s · Replicas: **2** · Failover order: `r-review-a` → `r-review-b`
+Deadline: 900 s · Replicas: **7** · Overflow order: `r-se-review-apple-1` → `r-se-review-apple-2` → `r-se-review-apple-3` → `r-se-review-burst-1` → `r-se-review-burst-2` → `r-se-review-burst-3` → `r-se-review-burst-4` (primary first; burst only when activation fires)
 
-| Failover | Route | Priority | Provider | Endpoint | Node | Data tiers | Model |
-|---|---|---|---|---|---|---|---|
-| 1 | `r-review-a` | 1 | `llamacpp-gpu-2` | http://10.0.1.12:8080 | `gpu-node-2` | internal | weights-13b |
-| 2 | `r-review-b` | 2 | `mlx-apple-1` | http://127.0.0.1:8080 | `apple-node-1` | public, internal | weights-unified-35b |
+| Overflow | Route | Priority | Provider | Endpoint | Node | Pool role | Eligible | Data tiers | Model |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | `r-se-review-apple-1` | 1 | `mlx-apple-1` | http://10.200.0.11:8080 | `apple-ws-1` | primary | always | public, internal | weights-unified-70b |
+| 2 | `r-se-review-apple-2` | 2 | `mlx-apple-2` | http://10.200.0.12:8080 | `apple-ws-2` | primary | always | public, internal | weights-unified-70b |
+| 3 | `r-se-review-apple-3` | 3 | `mlx-apple-3` | http://10.200.0.13:8080 | `apple-ws-3` | primary | always | public, internal | weights-unified-70b |
+| 4 | `r-se-review-burst-1` | 11 | `vllm-burst-1` | http://10.50.0.11:8000 | `gpu-burst-1` | burst | when-activation | public, internal | weights-70b |
+| 5 | `r-se-review-burst-2` | 12 | `vllm-burst-2` | http://10.50.0.12:8000 | `gpu-burst-2` | burst | when-activation | public, internal | weights-70b |
+| 6 | `r-se-review-burst-3` | 13 | `vllm-burst-3` | http://10.50.0.13:8000 | `gpu-burst-3` | burst | when-activation | public, internal | weights-70b |
+| 7 | `r-se-review-burst-4` | 14 | `vllm-burst-4` | http://10.50.0.14:8000 | `gpu-burst-4` | burst | when-activation | public, internal | weights-70b |
 
 
 ### `se-synthesis`
 
-Deadline: 900 s · Replicas: **2** · Failover order: `r-synth-a` → `r-synth-b`
+Deadline: 900 s · Replicas: **7** · Overflow order: `r-se-synthesis-apple-1` → `r-se-synthesis-apple-2` → `r-se-synthesis-apple-3` → `r-se-synthesis-burst-1` → `r-se-synthesis-burst-2` → `r-se-synthesis-burst-3` → `r-se-synthesis-burst-4` (primary first; burst only when activation fires)
 
-| Failover | Route | Priority | Provider | Endpoint | Node | Data tiers | Model |
-|---|---|---|---|---|---|---|---|
-| 1 | `r-synth-a` | 1 | `vllm-gpu-1` | http://10.0.1.11:8000 | `gpu-node-1` | public, internal | weights-70b |
-| 2 | `r-synth-b` | 2 | `vllm-gpu-4` | http://10.0.1.14:8000 | `gpu-node-4` | public, internal | weights-22b |
+| Overflow | Route | Priority | Provider | Endpoint | Node | Pool role | Eligible | Data tiers | Model |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | `r-se-synthesis-apple-1` | 1 | `mlx-apple-1` | http://10.200.0.11:8080 | `apple-ws-1` | primary | always | public, internal | weights-unified-70b |
+| 2 | `r-se-synthesis-apple-2` | 2 | `mlx-apple-2` | http://10.200.0.12:8080 | `apple-ws-2` | primary | always | public, internal | weights-unified-70b |
+| 3 | `r-se-synthesis-apple-3` | 3 | `mlx-apple-3` | http://10.200.0.13:8080 | `apple-ws-3` | primary | always | public, internal | weights-unified-70b |
+| 4 | `r-se-synthesis-burst-1` | 11 | `vllm-burst-1` | http://10.50.0.11:8000 | `gpu-burst-1` | burst | when-activation | public, internal | weights-70b |
+| 5 | `r-se-synthesis-burst-2` | 12 | `vllm-burst-2` | http://10.50.0.12:8000 | `gpu-burst-2` | burst | when-activation | public, internal | weights-70b |
+| 6 | `r-se-synthesis-burst-3` | 13 | `vllm-burst-3` | http://10.50.0.13:8000 | `gpu-burst-3` | burst | when-activation | public, internal | weights-70b |
+| 7 | `r-se-synthesis-burst-4` | 14 | `vllm-burst-4` | http://10.50.0.14:8000 | `gpu-burst-4` | burst | when-activation | public, internal | weights-70b |
 
 
-## 4. Network and identity
+## 7. Network and identity
 
 | Setting | Value |
 |---|---|
@@ -161,19 +241,14 @@ Deadline: 900 s · Replicas: **2** · Failover order: `r-synth-a` → `r-synth-b
 
 Work addresses the gateway, never a node. Per-node overlay/segment is the Topology `segment` column.
 
-## 5. Gaps
+## 8. Gaps
 
 | Id | Severity | Kind | Subject | Next action |
 |---|---|---|---|---|
-| `public-bind:public-gap` | critical | public-bind | public-gap | Bind the serving endpoint on loopback or a private overlay address; do not expose it on a public address. |
-| `tier-violation:r-cloud` | critical | tier-violation | r-cloud | Refuse this route: its route class / provider tiers exceed the node's attested dataTiersAllowed. Move the route or attest the node for the needed tier. |
-| `unauthenticated:public-gap` | critical | unauthenticated-non-loopback | public-gap | Set provider.secretRef (credential from the environment at call time) or bind the endpoint on loopback. |
-| `fit:gpu-node-3:vllm-gpu-3:weights-60b` | high | fit-cpu-fallback | weights-60b@gpu-node-3 | Declare tensorParallel across the node's GPUs, shrink or quantize the model, reduce parallelSlots/context, add GPU memory, or move the model to a node that fits. |
-| `node-offline:lab-node-1` | high | node-offline | lab-node-1 | Bring the node online (join steps in NODE_LIFECYCLE.md) or drain and remove it from the inventory. |
-| `single-replica:architecture-and-final-review` | medium | single-replica | architecture-and-final-review | Add a second qualified route on a different node so this capability class is not a single point of failure. |
-| `single-replica:code-build` | medium | single-replica | code-build | Add a second qualified route on a different node so this capability class is not a single point of failure. |
-| `single-replica:code-review` | medium | single-replica | code-review | Add a second qualified route on a different node so this capability class is not a single point of failure. |
-| `single-replica:embedding` | medium | single-replica | embedding | Add a second qualified route on a different node so this capability class is not a single point of failure. |
-| `single-replica:intake-classification` | medium | single-replica | intake-classification | Add a second qualified route on a different node so this capability class is not a single point of failure. |
-| `unknown-size:mlx-apple-2:weights-unknown` | medium | unknown-model-size | weights-unknown@mlx-apple-2 | Declare provider.models[].memoryGb so the fit plan can decide; unknown never counts as fits. |
+| `restricted-cannot-burst:architecture-and-final-review` | critical | restricted-cannot-burst | architecture-and-final-review | Add primary capacity that may hold restricted work; do not send it to a remote or cloud burst pool. |
+| `pool-oversubscribed-at-peak:apple-primary` | high | pool-oversubscribed-at-peak | apple-primary | Add primary capacity or allow burst for this pool's peak load; shared slots are not counted once per class. |
+| `pool-matches-no-node:lead-hardware-dedicated` | medium | pool-matches-no-node | lead-hardware-dedicated | Point this pool's nodes selector at inventory nodes, or add matching nodes to the inventory. |
+| `pool-matches-no-node:lead-security-dedicated` | medium | pool-matches-no-node | lead-security-dedicated | Point this pool's nodes selector at inventory nodes, or add matching nodes to the inventory. |
+| `pool-matches-no-node:shared-gpu` | medium | pool-matches-no-node | shared-gpu | Point this pool's nodes selector at inventory nodes, or add matching nodes to the inventory. |
+| `route-unmeasured:r-embedding-apple-1` | medium | route-unmeasured | r-embedding-apple-1 | Run a benchmark and record routes[].measured (tokensPerSecond, measuredAt); latency is unproven against the class deadline. |
 

@@ -1,72 +1,53 @@
-flowchart TD
+flowchart LR
   GW["gateway"]
-  subgraph seg_unreachable["segment: unreachable"]
-    N_lab_node_1["lab-node-1<br/>lab-bench"]
+  subgraph P_apple_primary["pool: apple-primary (primary)"]
+    N_apple_ws_1["apple-ws-1<br/>apple-silicon"]
+    N_apple_ws_2["apple-ws-2<br/>apple-silicon"]
+    N_apple_ws_3["apple-ws-3<br/>apple-silicon"]
   end
-  subgraph seg_wireguard["segment: wireguard"]
-    N_apple_node_1["apple-node-1<br/>apple-silicon"]
-    N_apple_node_2["apple-node-2<br/>apple-silicon"]
-    N_cpu_node_1["cpu-node-1<br/>cpu-server"]
-    N_gpu_node_1["gpu-node-1<br/>gpu-server"]
-    N_gpu_node_2["gpu-node-2<br/>gpu-server"]
-    N_gpu_node_3["gpu-node-3<br/>gpu-server"]
-    N_gpu_node_4["gpu-node-4<br/>gpu-server"]
+  subgraph P_lead_hardware_dedicated["pool: lead-hardware-dedicated (primary)"]
   end
+  subgraph P_lead_security_dedicated["pool: lead-security-dedicated (primary)"]
+  end
+  subgraph P_remote_gpu_burst["pool: remote-gpu-burst (burst)"]
+    N_gpu_burst_1["gpu-burst-1<br/>standby"]
+    N_gpu_burst_2["gpu-burst-2<br/>standby"]
+    N_gpu_burst_3["gpu-burst-3<br/>standby"]
+    N_gpu_burst_4["gpu-burst-4<br/>standby"]
+  end
+  subgraph P_shared_gpu["pool: shared-gpu (primary)"]
+  end
+  subgraph P_unpooled["unpooled"]
+    N_cpu_exec_1["cpu-exec-1<br/>cpu-server"]
+  end
+  style P_remote_gpu_burst stroke-dasharray: 5 5
   GW --> C_architecture_and_final_review["architecture-and-final-review"]
-  C_architecture_and_final_review --> R_r_final["r-final"]
-  R_r_final --> E_mlx_apple_1["mlx-apple-1"]
-  E_mlx_apple_1 --> N_apple_node_1
+  C_architecture_and_final_review -->|3 routes| P_apple_primary
   GW --> C_code_build["code-build"]
-  C_code_build --> R_r_code_build["r-code-build"]
-  R_r_code_build --> E_vllm_gpu_3["vllm-gpu-3"]
-  E_vllm_gpu_3 --> N_gpu_node_3
+  C_code_build -->|3 routes| P_apple_primary
+  C_code_build -.->|burst, 4 routes| P_remote_gpu_burst
   GW --> C_code_review["code-review"]
-  C_code_review --> R_r_code_review["r-code-review"]
-  R_r_code_review --> E_mlx_apple_2["mlx-apple-2"]
-  E_mlx_apple_2 --> N_apple_node_2
+  C_code_review -->|3 routes| P_apple_primary
+  C_code_review -.->|burst, 4 routes| P_remote_gpu_burst
   GW --> C_correspondence_drafting["correspondence-drafting"]
-  C_correspondence_drafting --> R_r_cloud["r-cloud"]
-  R_r_cloud --> E_cloud_gap["cloud-gap"]
-  E_cloud_gap --> N_gpu_node_2
-  C_correspondence_drafting --> R_r_public["r-public"]
-  R_r_public --> E_public_gap["public-gap"]
-  E_public_gap --> N_cpu_node_1
+  C_correspondence_drafting -->|3 routes| P_apple_primary
+  C_correspondence_drafting -.->|burst, 4 routes| P_remote_gpu_burst
   GW --> C_embedding["embedding"]
-  C_embedding --> R_r_embed["r-embed"]
-  R_r_embed --> E_llamacpp_cpu_1["llamacpp-cpu-1"]
-  E_llamacpp_cpu_1 --> N_cpu_node_1
+  C_embedding -->|3 routes| P_apple_primary
+  C_embedding -.->|burst, 4 routes| P_remote_gpu_burst
   GW --> C_health_check["health-check"]
-  C_health_check --> R_r_health_a["r-health-a"]
-  R_r_health_a --> E_vllm_gpu_1["vllm-gpu-1"]
-  E_vllm_gpu_1 --> N_gpu_node_1
-  C_health_check --> R_r_health_b["r-health-b"]
-  R_r_health_b --> E_mlx_apple_1["mlx-apple-1"]
-  E_mlx_apple_1 --> N_apple_node_1
+  C_health_check -->|3 routes| P_apple_primary
+  C_health_check -.->|burst, 4 routes| P_remote_gpu_burst
   GW --> C_intake_classification["intake-classification"]
-  C_intake_classification --> R_r_intake["r-intake"]
-  R_r_intake --> E_vllm_gpu_1["vllm-gpu-1"]
-  E_vllm_gpu_1 --> N_gpu_node_1
+  C_intake_classification -->|3 routes| P_apple_primary
+  C_intake_classification -.->|burst, 4 routes| P_remote_gpu_burst
   GW --> C_se_review["se-review"]
-  C_se_review --> R_r_review_a["r-review-a"]
-  R_r_review_a --> E_llamacpp_gpu_2["llamacpp-gpu-2"]
-  E_llamacpp_gpu_2 --> N_gpu_node_2
-  C_se_review --> R_r_review_b["r-review-b"]
-  R_r_review_b --> E_mlx_apple_1["mlx-apple-1"]
-  E_mlx_apple_1 --> N_apple_node_1
+  C_se_review -->|3 routes| P_apple_primary
+  C_se_review -.->|burst, 4 routes| P_remote_gpu_burst
   GW --> C_se_synthesis["se-synthesis"]
-  C_se_synthesis --> R_r_synth_a["r-synth-a"]
-  R_r_synth_a --> E_vllm_gpu_1["vllm-gpu-1"]
-  E_vllm_gpu_1 --> N_gpu_node_1
-  C_se_synthesis --> R_r_synth_b["r-synth-b"]
-  R_r_synth_b --> E_vllm_gpu_4["vllm-gpu-4"]
-  E_vllm_gpu_4 --> N_gpu_node_4
-  style E_public_gap fill:#ffcccc,stroke:#b00020,color:#000
-  G_public_bind_public_gap["critical: public-bind public-gap"]
-  style G_public_bind_public_gap fill:#ffcccc,stroke:#b00020,color:#000
-  E_public_gap -.-> G_public_bind_public_gap
-  G_tier_violation_r_cloud["critical: tier-violation r-cloud"]
-  style G_tier_violation_r_cloud fill:#ffcccc,stroke:#b00020,color:#000
-  R_r_cloud -.-> G_tier_violation_r_cloud
-  G_unauthenticated_public_gap["critical: unauthenticated-non-loopback public-gap"]
-  style G_unauthenticated_public_gap fill:#ffcccc,stroke:#b00020,color:#000
-  E_public_gap -.-> G_unauthenticated_public_gap
+  C_se_synthesis -->|3 routes| P_apple_primary
+  C_se_synthesis -.->|burst, 4 routes| P_remote_gpu_burst
+  E_llamacpp_cpu_1["llamacpp-cpu-1"] --> N_cpu_exec_1
+  G_restricted_cannot_burst_architecture_and_final_review["critical: restricted-cannot-burst architecture-and-final-review"]
+  style G_restricted_cannot_burst_architecture_and_final_review fill:#ffcccc,stroke:#b00020,color:#000
+  C_architecture_and_final_review -.-> G_restricted_cannot_burst_architecture_and_final_review

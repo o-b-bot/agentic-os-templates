@@ -16,7 +16,7 @@ merge, send, spend, publish).
 | `docs/adr/` | Architecture decision records: each decision, its context and consequences |
 | `docs/patterns/` | The design of each part: Chief of Staff, co-engineer and correspondence, systems engineering, factories, cross-person workflows, per-person ecosystems, Microsoft 365 integration, information review, resource topology, scheduling and routing, observability, unattended operations |
 | `design/cps-research-directorate/` | A reference organization (a cyber-physical systems research directorate): overview, org chart, roles and entitlements |
-| `design/cps-research-directorate/compute-plane/` | An example compute-plane design (topology, memory fit, gateway routes, gaps; Mermaid and SysML v2), generated from an example inventory |
+| `design/cps-research-directorate/compute-plane/` | An example compute-plane design: Apple-silicon workstations as the primary pool, remote GPU servers as a burst pool, sized from the number of people; topology, demand and capacity, sizing, memory fit, gateway routes, gaps, a what-if; Mermaid and SysML v2 |
 
 These are design documents only. The implementation (generator, templates, runtime) is not part of this release.
 

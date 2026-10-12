@@ -20,106 +20,411 @@ package ComputePlane {
         attribute capabilityClass : String;
         attribute priority : Integer;
     }
+    part def Pool {
+        attribute id : String;
+        attribute role : String;
+        attribute burstLocation : String;
+        attribute maxNodes : Integer;
+        attribute warmUpSeconds : Integer;
+    }
     part gateway : Gateway;
-    part apple_node_1 : Node;
-    doc /* node apple-node-1 */
-    part apple_node_2 : Node;
-    doc /* node apple-node-2 */
-    part cpu_node_1 : Node;
-    doc /* node cpu-node-1 */
-    part gpu_node_1 : Node;
-    doc /* node gpu-node-1 */
-    part gpu_node_2 : Node;
-    doc /* node gpu-node-2 */
-    part gpu_node_3 : Node;
-    doc /* node gpu-node-3 */
-    part gpu_node_4 : Node;
-    doc /* node gpu-node-4 */
-    part lab_node_1 : Node;
-    doc /* node lab-node-1 */
-    part cloud_gap : ServingEndpoint;
-    doc /* endpoint cloud-gap */
+    part apple_ws_1 : Node;
+    doc /* node apple-ws-1 */
+    part apple_ws_2 : Node;
+    doc /* node apple-ws-2 */
+    part apple_ws_3 : Node;
+    doc /* node apple-ws-3 */
+    part cpu_exec_1 : Node;
+    doc /* node cpu-exec-1 */
+    part gpu_burst_1 : Node;
+    doc /* node gpu-burst-1 */
+    part gpu_burst_2 : Node;
+    doc /* node gpu-burst-2 */
+    part gpu_burst_3 : Node;
+    doc /* node gpu-burst-3 */
+    part gpu_burst_4 : Node;
+    doc /* node gpu-burst-4 */
+    part pool_apple_primary : Pool;
+    doc /* pool apple-primary role primary */
+    part pool_lead_hardware_dedicated : Pool;
+    doc /* pool lead-hardware-dedicated role primary */
+    part pool_lead_security_dedicated : Pool;
+    doc /* pool lead-security-dedicated role primary */
+    part pool_remote_gpu_burst : Pool;
+    doc /* pool remote-gpu-burst role burst */
+    part pool_shared_gpu : Pool;
+    doc /* pool shared-gpu role primary */
     part llamacpp_cpu_1 : ServingEndpoint;
     doc /* endpoint llamacpp-cpu-1 */
-    part llamacpp_gpu_2 : ServingEndpoint;
-    doc /* endpoint llamacpp-gpu-2 */
     part mlx_apple_1 : ServingEndpoint;
     doc /* endpoint mlx-apple-1 */
     part mlx_apple_2 : ServingEndpoint;
     doc /* endpoint mlx-apple-2 */
-    part public_gap : ServingEndpoint;
-    doc /* endpoint public-gap */
-    part vllm_gpu_1 : ServingEndpoint;
-    doc /* endpoint vllm-gpu-1 */
-    part vllm_gpu_3 : ServingEndpoint;
-    doc /* endpoint vllm-gpu-3 */
-    part vllm_gpu_4 : ServingEndpoint;
-    doc /* endpoint vllm-gpu-4 */
-    part r_final : Route;
-    doc /* route r-final */
-    part r_code_build : Route;
-    doc /* route r-code-build */
-    part r_code_review : Route;
-    doc /* route r-code-review */
-    part r_cloud : Route;
-    doc /* route r-cloud */
-    part r_public : Route;
-    doc /* route r-public */
-    part r_embed : Route;
-    doc /* route r-embed */
-    part r_health_a : Route;
-    doc /* route r-health-a */
-    part r_health_b : Route;
-    doc /* route r-health-b */
-    part r_intake : Route;
-    doc /* route r-intake */
-    part r_review_a : Route;
-    doc /* route r-review-a */
-    part r_review_b : Route;
-    doc /* route r-review-b */
-    part r_synth_a : Route;
-    doc /* route r-synth-a */
-    part r_synth_b : Route;
-    doc /* route r-synth-b */
-    connect gateway to r_final;
-    connect r_final to mlx_apple_1;
-    connect mlx_apple_1 to apple_node_1;
-    connect gateway to r_code_build;
-    connect r_code_build to vllm_gpu_3;
-    connect vllm_gpu_3 to gpu_node_3;
-    connect gateway to r_code_review;
-    connect r_code_review to mlx_apple_2;
-    connect mlx_apple_2 to apple_node_2;
-    connect gateway to r_cloud;
-    connect r_cloud to cloud_gap;
-    connect cloud_gap to gpu_node_2;
-    connect gateway to r_public;
-    connect r_public to public_gap;
-    connect public_gap to cpu_node_1;
-    connect gateway to r_embed;
-    connect r_embed to llamacpp_cpu_1;
-    connect llamacpp_cpu_1 to cpu_node_1;
-    connect gateway to r_health_a;
-    connect r_health_a to vllm_gpu_1;
-    connect vllm_gpu_1 to gpu_node_1;
-    connect gateway to r_health_b;
-    connect r_health_b to mlx_apple_1;
-    connect mlx_apple_1 to apple_node_1;
-    connect gateway to r_intake;
-    connect r_intake to vllm_gpu_1;
-    connect vllm_gpu_1 to gpu_node_1;
-    connect gateway to r_review_a;
-    connect r_review_a to llamacpp_gpu_2;
-    connect llamacpp_gpu_2 to gpu_node_2;
-    connect gateway to r_review_b;
-    connect r_review_b to mlx_apple_1;
-    connect mlx_apple_1 to apple_node_1;
-    connect gateway to r_synth_a;
-    connect r_synth_a to vllm_gpu_1;
-    connect vllm_gpu_1 to gpu_node_1;
-    connect gateway to r_synth_b;
-    connect r_synth_b to vllm_gpu_4;
-    connect vllm_gpu_4 to gpu_node_4;
+    part mlx_apple_3 : ServingEndpoint;
+    doc /* endpoint mlx-apple-3 */
+    part vllm_burst_1 : ServingEndpoint;
+    doc /* endpoint vllm-burst-1 */
+    part vllm_burst_2 : ServingEndpoint;
+    doc /* endpoint vllm-burst-2 */
+    part vllm_burst_3 : ServingEndpoint;
+    doc /* endpoint vllm-burst-3 */
+    part vllm_burst_4 : ServingEndpoint;
+    doc /* endpoint vllm-burst-4 */
+    part r_architecture_and_final_review_apple_1 : Route;
+    doc /* route r-architecture-and-final-review-apple-1 */
+    part r_architecture_and_final_review_apple_2 : Route;
+    doc /* route r-architecture-and-final-review-apple-2 */
+    part r_architecture_and_final_review_apple_3 : Route;
+    doc /* route r-architecture-and-final-review-apple-3 */
+    part r_code_build_apple_1 : Route;
+    doc /* route r-code-build-apple-1 */
+    part r_code_build_apple_2 : Route;
+    doc /* route r-code-build-apple-2 */
+    part r_code_build_apple_3 : Route;
+    doc /* route r-code-build-apple-3 */
+    part r_code_build_burst_1 : Route;
+    doc /* route r-code-build-burst-1 */
+    part r_code_build_burst_2 : Route;
+    doc /* route r-code-build-burst-2 */
+    part r_code_build_burst_3 : Route;
+    doc /* route r-code-build-burst-3 */
+    part r_code_build_burst_4 : Route;
+    doc /* route r-code-build-burst-4 */
+    part r_code_review_apple_1 : Route;
+    doc /* route r-code-review-apple-1 */
+    part r_code_review_apple_2 : Route;
+    doc /* route r-code-review-apple-2 */
+    part r_code_review_apple_3 : Route;
+    doc /* route r-code-review-apple-3 */
+    part r_code_review_burst_1 : Route;
+    doc /* route r-code-review-burst-1 */
+    part r_code_review_burst_2 : Route;
+    doc /* route r-code-review-burst-2 */
+    part r_code_review_burst_3 : Route;
+    doc /* route r-code-review-burst-3 */
+    part r_code_review_burst_4 : Route;
+    doc /* route r-code-review-burst-4 */
+    part r_correspondence_drafting_apple_1 : Route;
+    doc /* route r-correspondence-drafting-apple-1 */
+    part r_correspondence_drafting_apple_2 : Route;
+    doc /* route r-correspondence-drafting-apple-2 */
+    part r_correspondence_drafting_apple_3 : Route;
+    doc /* route r-correspondence-drafting-apple-3 */
+    part r_correspondence_drafting_burst_1 : Route;
+    doc /* route r-correspondence-drafting-burst-1 */
+    part r_correspondence_drafting_burst_2 : Route;
+    doc /* route r-correspondence-drafting-burst-2 */
+    part r_correspondence_drafting_burst_3 : Route;
+    doc /* route r-correspondence-drafting-burst-3 */
+    part r_correspondence_drafting_burst_4 : Route;
+    doc /* route r-correspondence-drafting-burst-4 */
+    part r_embedding_apple_1 : Route;
+    doc /* route r-embedding-apple-1 */
+    part r_embedding_apple_2 : Route;
+    doc /* route r-embedding-apple-2 */
+    part r_embedding_apple_3 : Route;
+    doc /* route r-embedding-apple-3 */
+    part r_embedding_burst_1 : Route;
+    doc /* route r-embedding-burst-1 */
+    part r_embedding_burst_2 : Route;
+    doc /* route r-embedding-burst-2 */
+    part r_embedding_burst_3 : Route;
+    doc /* route r-embedding-burst-3 */
+    part r_embedding_burst_4 : Route;
+    doc /* route r-embedding-burst-4 */
+    part r_health_check_apple_1 : Route;
+    doc /* route r-health-check-apple-1 */
+    part r_health_check_apple_2 : Route;
+    doc /* route r-health-check-apple-2 */
+    part r_health_check_apple_3 : Route;
+    doc /* route r-health-check-apple-3 */
+    part r_health_check_burst_1 : Route;
+    doc /* route r-health-check-burst-1 */
+    part r_health_check_burst_2 : Route;
+    doc /* route r-health-check-burst-2 */
+    part r_health_check_burst_3 : Route;
+    doc /* route r-health-check-burst-3 */
+    part r_health_check_burst_4 : Route;
+    doc /* route r-health-check-burst-4 */
+    part r_intake_classification_apple_1 : Route;
+    doc /* route r-intake-classification-apple-1 */
+    part r_intake_classification_apple_2 : Route;
+    doc /* route r-intake-classification-apple-2 */
+    part r_intake_classification_apple_3 : Route;
+    doc /* route r-intake-classification-apple-3 */
+    part r_intake_classification_burst_1 : Route;
+    doc /* route r-intake-classification-burst-1 */
+    part r_intake_classification_burst_2 : Route;
+    doc /* route r-intake-classification-burst-2 */
+    part r_intake_classification_burst_3 : Route;
+    doc /* route r-intake-classification-burst-3 */
+    part r_intake_classification_burst_4 : Route;
+    doc /* route r-intake-classification-burst-4 */
+    part r_se_review_apple_1 : Route;
+    doc /* route r-se-review-apple-1 */
+    part r_se_review_apple_2 : Route;
+    doc /* route r-se-review-apple-2 */
+    part r_se_review_apple_3 : Route;
+    doc /* route r-se-review-apple-3 */
+    part r_se_review_burst_1 : Route;
+    doc /* route r-se-review-burst-1 */
+    part r_se_review_burst_2 : Route;
+    doc /* route r-se-review-burst-2 */
+    part r_se_review_burst_3 : Route;
+    doc /* route r-se-review-burst-3 */
+    part r_se_review_burst_4 : Route;
+    doc /* route r-se-review-burst-4 */
+    part r_se_synthesis_apple_1 : Route;
+    doc /* route r-se-synthesis-apple-1 */
+    part r_se_synthesis_apple_2 : Route;
+    doc /* route r-se-synthesis-apple-2 */
+    part r_se_synthesis_apple_3 : Route;
+    doc /* route r-se-synthesis-apple-3 */
+    part r_se_synthesis_burst_1 : Route;
+    doc /* route r-se-synthesis-burst-1 */
+    part r_se_synthesis_burst_2 : Route;
+    doc /* route r-se-synthesis-burst-2 */
+    part r_se_synthesis_burst_3 : Route;
+    doc /* route r-se-synthesis-burst-3 */
+    part r_se_synthesis_burst_4 : Route;
+    doc /* route r-se-synthesis-burst-4 */
+    connect gateway to r_architecture_and_final_review_apple_1;
+    connect r_architecture_and_final_review_apple_1 to mlx_apple_1;
+    connect mlx_apple_1 to apple_ws_1;
+    connect r_architecture_and_final_review_apple_1 to pool_apple_primary;
+    connect gateway to r_architecture_and_final_review_apple_2;
+    connect r_architecture_and_final_review_apple_2 to mlx_apple_2;
+    connect mlx_apple_2 to apple_ws_2;
+    connect r_architecture_and_final_review_apple_2 to pool_apple_primary;
+    connect gateway to r_architecture_and_final_review_apple_3;
+    connect r_architecture_and_final_review_apple_3 to mlx_apple_3;
+    connect mlx_apple_3 to apple_ws_3;
+    connect r_architecture_and_final_review_apple_3 to pool_apple_primary;
+    connect gateway to r_code_build_apple_1;
+    connect r_code_build_apple_1 to mlx_apple_1;
+    connect mlx_apple_1 to apple_ws_1;
+    connect r_code_build_apple_1 to pool_apple_primary;
+    connect gateway to r_code_build_apple_2;
+    connect r_code_build_apple_2 to mlx_apple_2;
+    connect mlx_apple_2 to apple_ws_2;
+    connect r_code_build_apple_2 to pool_apple_primary;
+    connect gateway to r_code_build_apple_3;
+    connect r_code_build_apple_3 to mlx_apple_3;
+    connect mlx_apple_3 to apple_ws_3;
+    connect r_code_build_apple_3 to pool_apple_primary;
+    connect gateway to r_code_build_burst_1;
+    connect r_code_build_burst_1 to vllm_burst_1;
+    connect vllm_burst_1 to gpu_burst_1;
+    connect r_code_build_burst_1 to pool_remote_gpu_burst;
+    connect gateway to r_code_build_burst_2;
+    connect r_code_build_burst_2 to vllm_burst_2;
+    connect vllm_burst_2 to gpu_burst_2;
+    connect r_code_build_burst_2 to pool_remote_gpu_burst;
+    connect gateway to r_code_build_burst_3;
+    connect r_code_build_burst_3 to vllm_burst_3;
+    connect vllm_burst_3 to gpu_burst_3;
+    connect r_code_build_burst_3 to pool_remote_gpu_burst;
+    connect gateway to r_code_build_burst_4;
+    connect r_code_build_burst_4 to vllm_burst_4;
+    connect vllm_burst_4 to gpu_burst_4;
+    connect r_code_build_burst_4 to pool_remote_gpu_burst;
+    connect gateway to r_code_review_apple_1;
+    connect r_code_review_apple_1 to mlx_apple_1;
+    connect mlx_apple_1 to apple_ws_1;
+    connect r_code_review_apple_1 to pool_apple_primary;
+    connect gateway to r_code_review_apple_2;
+    connect r_code_review_apple_2 to mlx_apple_2;
+    connect mlx_apple_2 to apple_ws_2;
+    connect r_code_review_apple_2 to pool_apple_primary;
+    connect gateway to r_code_review_apple_3;
+    connect r_code_review_apple_3 to mlx_apple_3;
+    connect mlx_apple_3 to apple_ws_3;
+    connect r_code_review_apple_3 to pool_apple_primary;
+    connect gateway to r_code_review_burst_1;
+    connect r_code_review_burst_1 to vllm_burst_1;
+    connect vllm_burst_1 to gpu_burst_1;
+    connect r_code_review_burst_1 to pool_remote_gpu_burst;
+    connect gateway to r_code_review_burst_2;
+    connect r_code_review_burst_2 to vllm_burst_2;
+    connect vllm_burst_2 to gpu_burst_2;
+    connect r_code_review_burst_2 to pool_remote_gpu_burst;
+    connect gateway to r_code_review_burst_3;
+    connect r_code_review_burst_3 to vllm_burst_3;
+    connect vllm_burst_3 to gpu_burst_3;
+    connect r_code_review_burst_3 to pool_remote_gpu_burst;
+    connect gateway to r_code_review_burst_4;
+    connect r_code_review_burst_4 to vllm_burst_4;
+    connect vllm_burst_4 to gpu_burst_4;
+    connect r_code_review_burst_4 to pool_remote_gpu_burst;
+    connect gateway to r_correspondence_drafting_apple_1;
+    connect r_correspondence_drafting_apple_1 to mlx_apple_1;
+    connect mlx_apple_1 to apple_ws_1;
+    connect r_correspondence_drafting_apple_1 to pool_apple_primary;
+    connect gateway to r_correspondence_drafting_apple_2;
+    connect r_correspondence_drafting_apple_2 to mlx_apple_2;
+    connect mlx_apple_2 to apple_ws_2;
+    connect r_correspondence_drafting_apple_2 to pool_apple_primary;
+    connect gateway to r_correspondence_drafting_apple_3;
+    connect r_correspondence_drafting_apple_3 to mlx_apple_3;
+    connect mlx_apple_3 to apple_ws_3;
+    connect r_correspondence_drafting_apple_3 to pool_apple_primary;
+    connect gateway to r_correspondence_drafting_burst_1;
+    connect r_correspondence_drafting_burst_1 to vllm_burst_1;
+    connect vllm_burst_1 to gpu_burst_1;
+    connect r_correspondence_drafting_burst_1 to pool_remote_gpu_burst;
+    connect gateway to r_correspondence_drafting_burst_2;
+    connect r_correspondence_drafting_burst_2 to vllm_burst_2;
+    connect vllm_burst_2 to gpu_burst_2;
+    connect r_correspondence_drafting_burst_2 to pool_remote_gpu_burst;
+    connect gateway to r_correspondence_drafting_burst_3;
+    connect r_correspondence_drafting_burst_3 to vllm_burst_3;
+    connect vllm_burst_3 to gpu_burst_3;
+    connect r_correspondence_drafting_burst_3 to pool_remote_gpu_burst;
+    connect gateway to r_correspondence_drafting_burst_4;
+    connect r_correspondence_drafting_burst_4 to vllm_burst_4;
+    connect vllm_burst_4 to gpu_burst_4;
+    connect r_correspondence_drafting_burst_4 to pool_remote_gpu_burst;
+    connect gateway to r_embedding_apple_1;
+    connect r_embedding_apple_1 to mlx_apple_1;
+    connect mlx_apple_1 to apple_ws_1;
+    connect r_embedding_apple_1 to pool_apple_primary;
+    connect gateway to r_embedding_apple_2;
+    connect r_embedding_apple_2 to mlx_apple_2;
+    connect mlx_apple_2 to apple_ws_2;
+    connect r_embedding_apple_2 to pool_apple_primary;
+    connect gateway to r_embedding_apple_3;
+    connect r_embedding_apple_3 to mlx_apple_3;
+    connect mlx_apple_3 to apple_ws_3;
+    connect r_embedding_apple_3 to pool_apple_primary;
+    connect gateway to r_embedding_burst_1;
+    connect r_embedding_burst_1 to vllm_burst_1;
+    connect vllm_burst_1 to gpu_burst_1;
+    connect r_embedding_burst_1 to pool_remote_gpu_burst;
+    connect gateway to r_embedding_burst_2;
+    connect r_embedding_burst_2 to vllm_burst_2;
+    connect vllm_burst_2 to gpu_burst_2;
+    connect r_embedding_burst_2 to pool_remote_gpu_burst;
+    connect gateway to r_embedding_burst_3;
+    connect r_embedding_burst_3 to vllm_burst_3;
+    connect vllm_burst_3 to gpu_burst_3;
+    connect r_embedding_burst_3 to pool_remote_gpu_burst;
+    connect gateway to r_embedding_burst_4;
+    connect r_embedding_burst_4 to vllm_burst_4;
+    connect vllm_burst_4 to gpu_burst_4;
+    connect r_embedding_burst_4 to pool_remote_gpu_burst;
+    connect gateway to r_health_check_apple_1;
+    connect r_health_check_apple_1 to mlx_apple_1;
+    connect mlx_apple_1 to apple_ws_1;
+    connect r_health_check_apple_1 to pool_apple_primary;
+    connect gateway to r_health_check_apple_2;
+    connect r_health_check_apple_2 to mlx_apple_2;
+    connect mlx_apple_2 to apple_ws_2;
+    connect r_health_check_apple_2 to pool_apple_primary;
+    connect gateway to r_health_check_apple_3;
+    connect r_health_check_apple_3 to mlx_apple_3;
+    connect mlx_apple_3 to apple_ws_3;
+    connect r_health_check_apple_3 to pool_apple_primary;
+    connect gateway to r_health_check_burst_1;
+    connect r_health_check_burst_1 to vllm_burst_1;
+    connect vllm_burst_1 to gpu_burst_1;
+    connect r_health_check_burst_1 to pool_remote_gpu_burst;
+    connect gateway to r_health_check_burst_2;
+    connect r_health_check_burst_2 to vllm_burst_2;
+    connect vllm_burst_2 to gpu_burst_2;
+    connect r_health_check_burst_2 to pool_remote_gpu_burst;
+    connect gateway to r_health_check_burst_3;
+    connect r_health_check_burst_3 to vllm_burst_3;
+    connect vllm_burst_3 to gpu_burst_3;
+    connect r_health_check_burst_3 to pool_remote_gpu_burst;
+    connect gateway to r_health_check_burst_4;
+    connect r_health_check_burst_4 to vllm_burst_4;
+    connect vllm_burst_4 to gpu_burst_4;
+    connect r_health_check_burst_4 to pool_remote_gpu_burst;
+    connect gateway to r_intake_classification_apple_1;
+    connect r_intake_classification_apple_1 to mlx_apple_1;
+    connect mlx_apple_1 to apple_ws_1;
+    connect r_intake_classification_apple_1 to pool_apple_primary;
+    connect gateway to r_intake_classification_apple_2;
+    connect r_intake_classification_apple_2 to mlx_apple_2;
+    connect mlx_apple_2 to apple_ws_2;
+    connect r_intake_classification_apple_2 to pool_apple_primary;
+    connect gateway to r_intake_classification_apple_3;
+    connect r_intake_classification_apple_3 to mlx_apple_3;
+    connect mlx_apple_3 to apple_ws_3;
+    connect r_intake_classification_apple_3 to pool_apple_primary;
+    connect gateway to r_intake_classification_burst_1;
+    connect r_intake_classification_burst_1 to vllm_burst_1;
+    connect vllm_burst_1 to gpu_burst_1;
+    connect r_intake_classification_burst_1 to pool_remote_gpu_burst;
+    connect gateway to r_intake_classification_burst_2;
+    connect r_intake_classification_burst_2 to vllm_burst_2;
+    connect vllm_burst_2 to gpu_burst_2;
+    connect r_intake_classification_burst_2 to pool_remote_gpu_burst;
+    connect gateway to r_intake_classification_burst_3;
+    connect r_intake_classification_burst_3 to vllm_burst_3;
+    connect vllm_burst_3 to gpu_burst_3;
+    connect r_intake_classification_burst_3 to pool_remote_gpu_burst;
+    connect gateway to r_intake_classification_burst_4;
+    connect r_intake_classification_burst_4 to vllm_burst_4;
+    connect vllm_burst_4 to gpu_burst_4;
+    connect r_intake_classification_burst_4 to pool_remote_gpu_burst;
+    connect gateway to r_se_review_apple_1;
+    connect r_se_review_apple_1 to mlx_apple_1;
+    connect mlx_apple_1 to apple_ws_1;
+    connect r_se_review_apple_1 to pool_apple_primary;
+    connect gateway to r_se_review_apple_2;
+    connect r_se_review_apple_2 to mlx_apple_2;
+    connect mlx_apple_2 to apple_ws_2;
+    connect r_se_review_apple_2 to pool_apple_primary;
+    connect gateway to r_se_review_apple_3;
+    connect r_se_review_apple_3 to mlx_apple_3;
+    connect mlx_apple_3 to apple_ws_3;
+    connect r_se_review_apple_3 to pool_apple_primary;
+    connect gateway to r_se_review_burst_1;
+    connect r_se_review_burst_1 to vllm_burst_1;
+    connect vllm_burst_1 to gpu_burst_1;
+    connect r_se_review_burst_1 to pool_remote_gpu_burst;
+    connect gateway to r_se_review_burst_2;
+    connect r_se_review_burst_2 to vllm_burst_2;
+    connect vllm_burst_2 to gpu_burst_2;
+    connect r_se_review_burst_2 to pool_remote_gpu_burst;
+    connect gateway to r_se_review_burst_3;
+    connect r_se_review_burst_3 to vllm_burst_3;
+    connect vllm_burst_3 to gpu_burst_3;
+    connect r_se_review_burst_3 to pool_remote_gpu_burst;
+    connect gateway to r_se_review_burst_4;
+    connect r_se_review_burst_4 to vllm_burst_4;
+    connect vllm_burst_4 to gpu_burst_4;
+    connect r_se_review_burst_4 to pool_remote_gpu_burst;
+    connect gateway to r_se_synthesis_apple_1;
+    connect r_se_synthesis_apple_1 to mlx_apple_1;
+    connect mlx_apple_1 to apple_ws_1;
+    connect r_se_synthesis_apple_1 to pool_apple_primary;
+    connect gateway to r_se_synthesis_apple_2;
+    connect r_se_synthesis_apple_2 to mlx_apple_2;
+    connect mlx_apple_2 to apple_ws_2;
+    connect r_se_synthesis_apple_2 to pool_apple_primary;
+    connect gateway to r_se_synthesis_apple_3;
+    connect r_se_synthesis_apple_3 to mlx_apple_3;
+    connect mlx_apple_3 to apple_ws_3;
+    connect r_se_synthesis_apple_3 to pool_apple_primary;
+    connect gateway to r_se_synthesis_burst_1;
+    connect r_se_synthesis_burst_1 to vllm_burst_1;
+    connect vllm_burst_1 to gpu_burst_1;
+    connect r_se_synthesis_burst_1 to pool_remote_gpu_burst;
+    connect gateway to r_se_synthesis_burst_2;
+    connect r_se_synthesis_burst_2 to vllm_burst_2;
+    connect vllm_burst_2 to gpu_burst_2;
+    connect r_se_synthesis_burst_2 to pool_remote_gpu_burst;
+    connect gateway to r_se_synthesis_burst_3;
+    connect r_se_synthesis_burst_3 to vllm_burst_3;
+    connect vllm_burst_3 to gpu_burst_3;
+    connect r_se_synthesis_burst_3 to pool_remote_gpu_burst;
+    connect gateway to r_se_synthesis_burst_4;
+    connect r_se_synthesis_burst_4 to vllm_burst_4;
+    connect vllm_burst_4 to gpu_burst_4;
+    connect r_se_synthesis_burst_4 to pool_remote_gpu_burst;
+    connect llamacpp_cpu_1 to cpu_exec_1;
     requirement def NoUnauthenticatedNonLoopback {
         doc /* Unauthenticated serving endpoints must bind loopback. */
     }

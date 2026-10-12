@@ -24,7 +24,7 @@ REFERENCE MATERIAL (MIT-licensed design documents; adapt them to this environmen
 - <repo>/docs/OPERATING_PRINCIPLES.md: the rules every part follows. <repo>/docs/GLOSSARY.md: the terms.
 - <repo>/docs/adr/: the architecture decisions and why; <repo>/docs/patterns/: the design of each part (Chief of Staff, systems engineering, factories, cross-person workflows, per-person ecosystems, Microsoft 365 integration, information review, resource topology, scheduling and routing, observability); <repo>/docs/METHODOLOGY.md: interview to first slice.
 - <repo>/design/cps-research-directorate/README.md, ORG_CHART.md, ENTITLEMENTS.md: the reference organization, its people, roles and what each may see and do.
-- <repo>/design/cps-research-directorate/compute-plane/: an example of the generated compute-plane design (narrative, Mermaid, SysML v2), produced from an example inventory; yours is generated from your surveyed environment.
+- <repo>/design/cps-research-directorate/compute-plane/: an example of the generated compute-plane design (Apple-silicon primary pool, remote GPU burst pool, demand sized from the number of people; narrative, Mermaid, SysML v2, a what-if), produced from an example inventory; yours is generated from your surveyed environment.
 Read these before designing. If something you need is not in them, say so under open questions and continue; never invent it.
 
 ORGANIZATION
