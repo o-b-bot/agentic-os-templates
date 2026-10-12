@@ -11,7 +11,7 @@ design runs on a laptop or on a large GPU fleet, and how it operates day to day:
 board projections, the audit journal, unattended batch windows, the consoles and the coding-agent adapter.
 
 Related: [METHODOLOGY.md](METHODOLOGY.md) (why), [OPERATING_PRINCIPLES.md](OPERATING_PRINCIPLES.md)
-(rules), [GLOSSARY.md](GLOSSARY.md) (terms), [TEMPLATE_CONTEXT.md](TEMPLATE_CONTEXT.md) (render contract).
+(rules), [GLOSSARY.md](GLOSSARY.md) (terms), TEMPLATE_CONTEXT.md (render contract).
 
 ## 1. Planes
 
@@ -316,7 +316,7 @@ The engineering console and the factories reach a coding agent through `surfaces
 `lane-prompt-in-candidate-and-evidence-out`.
 
 - **In:** a self-contained lane prompt (work item, exclusive paths, verification catalogue, collision
-  map; [LANE_PROMPT_TEMPLATE.md](LANE_PROMPT_TEMPLATE.md)).
+  map; LANE_PROMPT_TEMPLATE.md).
 - **Out:** a candidate (commit or artifact in a worktree) plus evidence bound to command, exit code and
   revision. The agent never pushes, merges, approves or edits its own oracle; the publisher and the
   verifier stay outside it.
@@ -385,28 +385,50 @@ flowchart TB
     RT[Model runtimes via qualified routes]
   end
   PUB[Publisher: bundle or draft PR]
-  CI[Hosted CI + human review]
+  CI[Merge gate on the exact head<br/>+ human review]
 
-  CFG --> COS & SEO & SUP
+  CFG --> COS
+  CFG --> SEO
+  CFG --> SUP
   COS <--> J
-  COS --> OB --> SEO
-  SEO --> OB --> SUP --> CELL
-  CELL --> WT --> VER --> EVL
-  CELL -.calls.-> RT
-  SEO -.calls.-> RT
-  DOCS --> IDX --> COS & SEO & CELL
+  COS --> OB
+  OB --> SEO
+  SEO --> OB
+  OB --> SUP
+  SUP --> CELL
+  CELL --> WT
+  WT --> VER
+  VER --> EVL
+  CELL -.->|calls| RT
+  SEO -.->|calls| RT
+  DOCS --> IDX
+  IDX --> COS
+  IDX --> SEO
+  IDX --> CELL
   DEC --> SUP
-  DEC --> PEL --> PUB --> CI
+  DEC --> PEL
+  PEL --> PUB
+  PUB --> CI
   EVL --> SEO
-  COS & SUP --> WL
-  WL -->|create on approval,<br/>then sync| BOARDS
-  BOARDS -.two-way pull.-> WL
+  COS --> WL
+  SUP --> WL
+  WL -->|create on approval, then sync| BOARDS
+  BOARDS -.->|two-way pull| WL
   BW --> SUP
-  WL & DEC & EVL --> BRF --> DCON & ECON
-  DCON & ECON -->|aof decide, hold release| DEC
-  ECON --> CA --> WT
+  WL --> BRF
+  DEC --> BRF
+  EVL --> BRF
+  BRF --> DCON
+  BRF --> ECON
+  DCON -->|decide, hold release| DEC
+  ECON -->|decide, hold release| DEC
+  ECON --> CA
+  CA --> WT
   MCP --> DEC
-  COS & SUP & CELL & PUB -.events.-> AUD
+  COS -.->|events| AUD
+  SUP -.->|events| AUD
+  CELL -.->|events| AUD
+  PUB -.->|events| AUD
 ```
 
 ## 14. One intent, end to end
@@ -422,7 +444,7 @@ sequenceDiagram
   participant C as Work cell (lead/builder/reviewer)
   participant V as Verifier
   participant L as Evidence ledger
-  participant G as Publisher + hosted CI
+  participant G as Publisher + merge gate
 
   P->>CoS: intent (natural language)
   CoS->>CoS: intake record (untrusted input, question until converted)
@@ -444,7 +466,7 @@ sequenceDiagram
   SE-->>CoS: adjudication
   CoS->>P: final briefing (candidate, evidence ids, open risks)
   Note over G: deliveryMode draft-pr: push + open draft PR only
-  G-->>P: CI result on exact head; merge is the human's decision
+  G-->>P: merge-gate result on the exact head (merging is the human's decision)
 ```
 
 Once batch windows are active, SE synthesis and review (steps 4 to 6) and the build, verification and

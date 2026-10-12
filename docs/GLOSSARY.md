@@ -53,7 +53,7 @@ given where a term maps to one.
 | **Entitlements** | Which shared organs and factories a principal may use. `principals[].entitlements`. |
 | **Evidence class** | How a claim was produced: `operational` (real system, real inputs), `synthetic` (fixtures), `demo-fixture` (scripted), `read-only-inspection` (read, not run). |
 | **Evidence ledger** | Append-only store of evidence records. `evidence.ledgerPath`. |
-| **Evidence record** | One claim bound to command, working directory, exit code, revision, isolation, cache state and non-claims. Id `EV-<yyyymmdd>-<seq>`. [EVIDENCE_RECORD.md](EVIDENCE_RECORD.md). |
+| **Evidence record** | One claim bound to command, working directory, exit code, revision, isolation, cache state and non-claims. Id `EV-<yyyymmdd>-<seq>`. EVIDENCE_RECORD.md. |
 | **Executor** | Whoever does a piece of work: the orchestrating seat, a builder lane or a local model. Also the node where work cells run (`executorNode`). |
 | **Existing solution** | A brownfield agentic tool already in use. `existingSolutions[]`. |
 | **Extended agent card** | The authenticated A2A card that carries internal detail (seat list, routes) kept out of the public card (`interop.exposeAsA2A.extendedCardAuthenticated`). |
@@ -79,7 +79,7 @@ given where a term maps to one.
 | **Journey** | The ordered stages an intent passes, from submission to the briefed terminal state. `organs.chiefOfStaff.journeyStages`. |
 | **Judge calibration** | Agreement between a model judge and human graders on a sample (`judgeCalibration.sampleRate`, `minAgreement`, defaults 0.1 and 0.8). Only a calibrated judge (`model-judge-with-human-sample`) may support a gate; a bare model judge never gates. |
 | **Kill switch** | The ability of named principals to stop all factories, one factory, a work cell, a Chief of Staff or routing. `governance.killSwitch`. |
-| **Lane** | A bounded unit of delegated work run by one model session with exclusive paths and a self-contained prompt. [LANE_PROMPT_TEMPLATE.md](LANE_PROMPT_TEMPLATE.md). |
+| **Lane** | A bounded unit of delegated work run by one model session with exclusive paths and a self-contained prompt. LANE_PROMPT_TEMPLATE.md. |
 | **Lead (factory seat)** | Work-cell seat that plans the work item. Does not author the cases the gate executes. |
 | **Lead (principal)** | A principal who leads a discipline or program. Usually the first-slice principal. |
 | **Lease** | Time-bounded assignment of one work item to one work cell by the supervisor. |

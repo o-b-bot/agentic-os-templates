@@ -10,6 +10,9 @@ merge, send, spend, publish).
 | `docs/ARCHITECTURE.md` | The paradigm and its parts |
 | `docs/OPERATING_PRINCIPLES.md` | The rules every part follows |
 | `docs/GLOSSARY.md` | The terms |
+| `docs/METHODOLOGY.md` | How an organization is taken from interview to a running first slice |
+| `docs/adr/` | Architecture decision records: each decision, its context and consequences |
+| `docs/patterns/` | The design of each part: Chief of Staff, co-engineer and correspondence, systems engineering, factories, cross-person workflows, per-person ecosystems, Microsoft 365 integration, information review, resource topology, scheduling and routing, observability, unattended operations |
 | `design/cps-research-directorate/` | A reference organization (a cyber-physical systems research directorate): overview, org chart, roles and entitlements |
 | `design/cps-research-directorate/compute-plane/` | An example compute-plane design (topology, memory fit, gateway routes, gaps; Mermaid and SysML v2), generated from an example inventory |
 

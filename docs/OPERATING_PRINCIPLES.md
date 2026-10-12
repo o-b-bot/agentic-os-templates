@@ -118,8 +118,8 @@ Related: [METHODOLOGY.md](METHODOLOGY.md) explains the method; [GLOSSARY.md](GLO
 | OP-63 | Calm for deciders, dense for builders: never give a Director the engineering console's panels. | One console for both is too noisy for one audience and too thin for the other. |
 | OP-64 | The coding agent is a replaceable adapter: lane prompt in, candidate plus evidence out; it never pushes, merges or approves. Change it with one config key and re-run wave 1's smoke checks. | Wiring the OS to one agent's API meant a rebuild every time the agent changed. |
 
-Templates: [HANDOFF_TEMPLATE.md](HANDOFF_TEMPLATE.md), [LANE_PROMPT_TEMPLATE.md](LANE_PROMPT_TEMPLATE.md),
-[EVIDENCE_RECORD.md](EVIDENCE_RECORD.md).
+Templates: HANDOFF_TEMPLATE.md, LANE_PROMPT_TEMPLATE.md,
+EVIDENCE_RECORD.md.
 
 ## J. Research-validated controls (v0.3)
 
