@@ -8,23 +8,30 @@ MIT-licensed reference material.
 Create a new repository owned by the organization (for example `cps-agentic-os-architecture`) and open it in
 Devin Desktop.
 
-## 2. Bring in the reference
+## 2. Bring in the reference (download or copy; no git needed)
 
-In the workspace folder:
+Make a folder `reference/` in the workspace and save these files into it, keeping the same sub-folders. On each page use
+**Download raw file** (top right of the file), or copy the text into a new file of the same name:
 
-```bash
-git clone https://github.com/o-b-bot/agentic-os-templates.git reference
-```
+- [`ARCHITECTURE_PROMPT.md`](https://github.com/o-b-bot/agentic-os-templates/blob/main/ARCHITECTURE_PROMPT.md)
+- [`LICENSE`](https://github.com/o-b-bot/agentic-os-templates/blob/main/LICENSE)
+- [`docs/ARCHITECTURE.md`](https://github.com/o-b-bot/agentic-os-templates/blob/main/docs/ARCHITECTURE.md)
+- [`docs/OPERATING_PRINCIPLES.md`](https://github.com/o-b-bot/agentic-os-templates/blob/main/docs/OPERATING_PRINCIPLES.md)
+- [`docs/GLOSSARY.md`](https://github.com/o-b-bot/agentic-os-templates/blob/main/docs/GLOSSARY.md)
+- [`docs/METHODOLOGY.md`](https://github.com/o-b-bot/agentic-os-templates/blob/main/docs/METHODOLOGY.md)
+- [`design/cps-research-directorate/README.md`](https://github.com/o-b-bot/agentic-os-templates/blob/main/design/cps-research-directorate/README.md)
+- [`design/cps-research-directorate/ORG_CHART.md`](https://github.com/o-b-bot/agentic-os-templates/blob/main/design/cps-research-directorate/ORG_CHART.md)
+- [`design/cps-research-directorate/ENTITLEMENTS.md`](https://github.com/o-b-bot/agentic-os-templates/blob/main/design/cps-research-directorate/ENTITLEMENTS.md)
+- [`design/cps-research-directorate/compute-plane/COMPUTE_PLANE.md`](https://github.com/o-b-bot/agentic-os-templates/blob/main/design/cps-research-directorate/compute-plane/COMPUTE_PLANE.md)
+- [`design/cps-research-directorate/compute-plane/DIAGRAM.md`](https://github.com/o-b-bot/agentic-os-templates/blob/main/design/cps-research-directorate/compute-plane/DIAGRAM.md)
 
-Without git, ask Devin to download this repository's files into `reference/`, keeping the folder layout.
+The architecture decision records (`docs/adr/`) and design patterns (`docs/patterns/`) are optional extra reading; add
+the ones Devin asks for.
 
 ## 3. Give Devin its rules
 
-```bash
-cp reference/devin-desktop/AGENTS.md AGENTS.md
-```
-
-If your version of Devin Desktop keeps rules or knowledge somewhere else, paste the same text there.
+Open [`devin-desktop/AGENTS.md`](https://github.com/o-b-bot/agentic-os-templates/blob/main/devin-desktop/AGENTS.md), copy its text into a new file `AGENTS.md` at the
+workspace root (or paste it into the app's rules or knowledge, if your version keeps them there).
 
 ## 4. Prepare the prompt
 
@@ -79,8 +86,4 @@ limited to what the design calls for.
 
 ## 7. Keep the reference current
 
-When this repository is updated (for example the compute-plane design):
-
-```bash
-git -C reference pull
-```
+When a file here is updated (for example the compute-plane design), download that file again over the old one.
