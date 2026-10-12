@@ -6,6 +6,8 @@ merge, send, spend, publish).
 
 | File | What it is |
 |---|---|
+| `DEVIN_DESKTOP.md` | Step by step: using these documents with Devin Desktop, with a message to paste for each phase |
+| `devin-desktop/AGENTS.md` | The rules file to copy into your workspace root |
 | `ARCHITECTURE_PROMPT.md` | A prompt that has an architecture-capable coding agent design the system for your organization from these documents |
 | `docs/ARCHITECTURE.md` | The paradigm and its parts |
 | `docs/OPERATING_PRINCIPLES.md` | The rules every part follows |
